@@ -26,14 +26,17 @@ using namespace std;
 //-------------------------------------------------
 ClauseBuffer::ClauseBuffer()
 {
-	// Instancier la liste
-	ListElement *my_buffer = new *ListElement;
+   ListElement *node = new ListElement(NULL);
 
+   /* Initialisation variables */
+   this->buffer.head = node;
+   this->buffer.tail = node;
 }
 
 ClauseBuffer::~ClauseBuffer()
 {
-   // TODO
+  delete this->buffer.head;
+  delete this->buffer.tail;
 }
 
 //-------------------------------------------------
@@ -42,13 +45,35 @@ ClauseBuffer::~ClauseBuffer()
 void
 ClauseBuffer::addClause(ClauseExchange * clause)
 {
-   // TODO
+   ListElement *node = new ListElement(clause);
+   ListElement *next = new ListElement(NULL);
+   ListElement *tail = new ListElement(NULL);
+
+   while(1){
+      tail = this->buffer.tail;
+      next = tail->next;
+      if(tail == this->buffer.tail){
+         if(next->next == NULL){
+            if(!(tail->next.compare_exchange_strong(next, node))){
+               break;
+            }
+            else{
+               this->buffer.tail.compare_exchange_strong(tail, next);
+               this->buffer.size++;
+            }
+         }
+      }
+   }
+   this->buffer.tail.compare_exchange_strong(tail, node);
+   this->buffer.size++;
 }
 
 void
 ClauseBuffer::addClauses(const vector<ClauseExchange *> & clauses)
 {
-   // TODO
+   for(auto &clause : clauses){
+      addClause(clause);
+   }
 }
 
 
