@@ -55,19 +55,19 @@ ClauseBuffer::addClause(ClauseExchange * clause)
       if(tail == this->buffer.tail){
          if(next->next == NULL){
             if(!(tail->next.compare_exchange_strong(next, node))){
-               next->clause->nbRefs++;
+               next->clause->size++;
                break;
             }
             else{
                this->buffer.tail.compare_exchange_strong(tail, next);
-               tail->clause->nbRefs++;
+               tail->clause->size++;
             }
          }
       }
    }
    this->buffer.tail.compare_exchange_strong(tail, node);
    this->buffer.size++;
-   tail->clause->nbRefs++;
+   tail->clause->size++;
 }
 
 void
@@ -98,12 +98,12 @@ ClauseBuffer::getClause(ClauseExchange ** clause)
                return false;
             }
             this->buffer.tail.compare_exchange_strong(tail, next);
-            tail->clause->nbRefs++;
+            tail->clause->size++;
          }
          else{
             clause = &(next->clause);
             if(this->buffer.head.compare_exchange_strong(head, next)){
-               head->clause->nbRefs++;
+               head->clause->size++;
                break;
             }
          }
