@@ -29,7 +29,16 @@ void
 SimpleSharing::doSharing(int idSharer, const vector<SolverInterface *> & from,
                          const vector<SolverInterface *> & to)
 {
-   // TODO
+	/* from = prod - to = cons */
+
+	/* Add all clauses from producers in tmp */
+	for(auto &solverInt : from){
+		solverInt->getLearnedClauses(tmp);
+	}
+	/* Put them to all consumers */
+	for(auto *solverInt : to){
+		solverInt->addLearnedClauses(tmp);
+	}
 }
 
 SharingStatistics
