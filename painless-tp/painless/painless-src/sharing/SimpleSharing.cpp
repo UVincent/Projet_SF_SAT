@@ -36,7 +36,7 @@ SimpleSharing::doSharing(int idSharer, const vector<SolverInterface *> & from,
 		solverInt->getLearnedClauses(tmp);
 	}
 	/* Put them to all consumers */
-	for(auto *solverInt : to){
+	for(auto &solverInt : to){
 		solverInt->addLearnedClauses(tmp);
 	}
 }
