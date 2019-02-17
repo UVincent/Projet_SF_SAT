@@ -55,17 +55,19 @@ ClauseBuffer::addClause(ClauseExchange * clause)
       if(tail == this->buffer.tail){
          if(next->next == NULL){
             if(!(tail->next.compare_exchange_strong(next, node))){
+               next->clause->nbRefs++;
                break;
             }
             else{
                this->buffer.tail.compare_exchange_strong(tail, next);
-               this->buffer.size++;
+               tail->clause->nbRefs++;
             }
          }
       }
    }
    this->buffer.tail.compare_exchange_strong(tail, node);
    this->buffer.size++;
+   tail->clause->nbRefs++;
 }
 
 void
@@ -83,14 +85,40 @@ ClauseBuffer::addClauses(const vector<ClauseExchange *> & clauses)
 bool
 ClauseBuffer::getClause(ClauseExchange ** clause)
 {
-   // TODO
-   return false;
+   ListElement *head = new ListElement(NULL);
+   ListElement *tail = new ListElement(NULL);
+   ListElement *next = new ListElement(NULL);
+   while(1){
+      head = this->buffer.head;
+      tail = this->buffer.tail;
+      next = head->next;
+      if(head == this->buffer.head){
+         if(head == tail){
+            if(next == NULL){
+               return false;
+            }
+            this->buffer.tail.compare_exchange_strong(tail, next);
+            tail->clause->nbRefs++;
+         }
+         else{
+            clause = &(next->clause);
+            if(this->buffer.head.compare_exchange_strong(head, next)){
+               head->clause->nbRefs++;
+               break;
+            }
+         }
+      }
+   }
+   free(*clause);
+   return true;
 }
 
 void
 ClauseBuffer::getClauses(vector<ClauseExchange *> & clauses)
 {
-   // TODO
+   for(auto &clause : clauses){
+      getClause(&clause);
+   }
 }
 
 //-------------------------------------------------
@@ -99,6 +127,5 @@ ClauseBuffer::getClauses(vector<ClauseExchange *> & clauses)
 int
 ClauseBuffer::size()
 {
-   // TODO
-   return 0;
+   return this->buffer.size;
 }
