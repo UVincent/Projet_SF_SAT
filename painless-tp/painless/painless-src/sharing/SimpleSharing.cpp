@@ -30,8 +30,6 @@ SimpleSharing::doSharing(int idSharer, const vector<SolverInterface *> & from,
                          const vector<SolverInterface *> & to)
 {
 	/* Params: from = prod / to = cons */
-	ClauseManager *cm = new ClauseManager();
-	cm->initClauseManager();
 	int i;
 
 	/* Add all clauses from producers in tmp */
@@ -40,7 +38,7 @@ SimpleSharing::doSharing(int idSharer, const vector<SolverInterface *> & from,
 		stats.sharedClauses += tmp.size();
 		/* Update all shared clauses refs to the total number of consumers */
 		for(auto &shared_clause : tmp){
-			cm->increaseClause(shared_clause, to.size());
+			ClauseManager::increaseClause(shared_clause, to.size());
 		}
 		/* Put them to all consumers */
 		for(auto &solverInt : to){
