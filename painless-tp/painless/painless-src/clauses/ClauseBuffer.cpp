@@ -129,3 +129,4 @@ ClauseBuffer::size()
 {
    return this->buffer.size;
 }
+

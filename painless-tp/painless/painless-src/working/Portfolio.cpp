@@ -24,62 +24,82 @@
 
 using namespace std;
 
+/* Le but du Portfolio est de lancer plusieurs SequentialWorkers en parallèle pour une formule donnée */
+
 Portfolio::Portfolio()
 {
-   // TODO
+   strategyEnding = false;
 }
 
 Portfolio::~Portfolio()
 {
-   // TODO
+   strategyEnding = true;
+   globalEnding = false;
 }
 
 void
 Portfolio::solve(const vector<int> & cube)
 {
-   // TODO
+   SequentialWorker *sw = new SequentialWorker(sw->solver);
+
+   sw->solve(cube);
 }
 
 void
 Portfolio::join(WorkingStrategy * strat, SatResult res,
                 const vector<int> & model)
 {
-   // TODO
+   SequentialWorker *sw = new SequentialWorker(sw->solver);
+
+   sw->join(strat, res, model);
 }
 
 void
 Portfolio::setInterrupt()
 {
-   // TODO
+   SequentialWorker *sw = new SequentialWorker(sw->solver);
+
+   sw->setInterrupt();
 }
 
 void
 Portfolio::unsetInterrupt()
 {
-   // TODO
+   SequentialWorker *sw = new SequentialWorker(sw->solver);
+
+   sw->unsetInterrupt();
 }
+
 
 void
 Portfolio::waitInterrupt()
 {
-   // TODO
+   SequentialWorker *sw = new SequentialWorker(sw->solver);
+
+   sw->waitInterrupt();
 }
 
 int
 Portfolio::getDivisionVariable()
 {
-   // TODO
-   return 0;
+   SequentialWorker *sw = new SequentialWorker(sw->solver);
+
+   sw->getDivisionVariable();
+   //return 0;
 }
 
 void
 Portfolio::setPhase(int var, bool value)
 {
-   // TODO
+   SequentialWorker *sw = new SequentialWorker(sw->solver);
+
+   sw->setPhase(var, value);
 }
 
 void
 Portfolio::bumpVariableActivity(int var, int times)
 {
-   // TODO
+   SequentialWorker *sw = new SequentialWorker(sw->solver);
+
+   sw->bumpVariableActivity(var, times);
 }

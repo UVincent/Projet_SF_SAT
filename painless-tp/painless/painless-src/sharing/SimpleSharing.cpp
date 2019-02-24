@@ -29,25 +29,23 @@ void
 SimpleSharing::doSharing(int idSharer, const vector<SolverInterface *> & from,
                          const vector<SolverInterface *> & to)
 {
-	/* from = prod - to = cons */
+	/* Params: from = prod / to = cons */
+	ClauseManager *cm = new ClauseManager();
+	cm->initClauseManager();
 	int i;
 
 	/* Add all clauses from producers in tmp */
 	for(auto &solverInt : from){
 		solverInt->getLearnedClauses(tmp);
-	}
-	
-	stats.sharedClauses = tmp.size();
-
-	/* Update all shared clauses refs to the total number of consumers */
-	for(auto &shared_clause : tmp){
-		for(i=0; i<to.size(); i++){
-			shared_clause->nbRefs++;
+		stats.sharedClauses += tmp.size();
+		/* Update all shared clauses refs to the total number of consumers */
+		for(auto &shared_clause : tmp){
+			cm->increaseClause(shared_clause, to.size());
 		}
-	}
-	/* Put them to all consumers */
-	for(auto &solverInt : to){
-		solverInt->addLearnedClauses(tmp);
+		/* Put them to all consumers */
+		for(auto &solverInt : to){
+			solverInt->addLearnedClauses(tmp);
+		}
 	}
 }
 
