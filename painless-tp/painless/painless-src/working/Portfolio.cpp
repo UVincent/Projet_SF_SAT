@@ -40,66 +40,68 @@ Portfolio::~Portfolio()
 void
 Portfolio::solve(const vector<int> & cube)
 {
-   SequentialWorker *sw = new SequentialWorker(sw->solver);
-
-   sw->solve(cube);
+   for(auto &sw : slaves){
+        sw->solve(cube);
+   }
 }
 
 void
 Portfolio::join(WorkingStrategy * strat, SatResult res,
                 const vector<int> & model)
 {
-   SequentialWorker *sw = new SequentialWorker(sw->solver);
+   for(auto &sw : slaves){
+        sw->join(strat, res, model);
+   }
 
-   sw->join(strat, res, model);
 }
 
 void
 Portfolio::setInterrupt()
 {
-   SequentialWorker *sw = new SequentialWorker(sw->solver);
-
-   sw->setInterrupt();
+   for(auto &sw : slaves){
+        sw->setInterrupt();
+   }
 }
 
 void
 Portfolio::unsetInterrupt()
 {
-   SequentialWorker *sw = new SequentialWorker(sw->solver);
-
-   sw->unsetInterrupt();
+   for(auto &sw : slaves){
+        sw->unsetInterrupt();
+   }
 }
 
 
 void
 Portfolio::waitInterrupt()
 {
-   SequentialWorker *sw = new SequentialWorker(sw->solver);
-
-   sw->waitInterrupt();
+   for(auto &sw : slaves){
+        sw->waitInterrupt();
+   }
 }
 
 int
 Portfolio::getDivisionVariable()
 {
-   SequentialWorker *sw = new SequentialWorker(sw->solver);
+   for(auto &sw : slaves){
+        sw->getDivisionVariable();
+   }
 
-   sw->getDivisionVariable();
-   //return 0;
+   return 0;
 }
 
 void
 Portfolio::setPhase(int var, bool value)
 {
-   SequentialWorker *sw = new SequentialWorker(sw->solver);
-
-   sw->setPhase(var, value);
+   for(auto &sw : slaves){
+        sw->setPhase(var, value);
+   }
 }
 
 void
 Portfolio::bumpVariableActivity(int var, int times)
 {
-   SequentialWorker *sw = new SequentialWorker(sw->solver);
-
-   sw->bumpVariableActivity(var, times);
+   for(auto &sw : slaves){
+        sw->bumpVariableActivity(var, times);
+   }
 }
