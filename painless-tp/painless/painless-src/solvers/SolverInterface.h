@@ -51,16 +51,16 @@ enum SolverType
 /// Structure for solver statistics
 struct SolvingStatistics
 { 
-   /// Constructor
+	/// Constructor
 	SolvingStatistics()
-   {
-      propagations = 0;
-      decisions    = 0;
-      conflicts    = 0;
-      restarts     = 0;
-      memPeak      = 0;
-   }
-
+	{
+		propagations = 0;
+		decisions    = 0;
+		conflicts    = 0;
+		restarts     = 0;
+		memPeak      = 0;
+	}
+	
 	unsigned long propagations; ///< Number of propagations.
 	unsigned long decisions;    ///< Number of decisions taken.
 	unsigned long conflicts;    ///< Number of reached conflicts.
@@ -73,108 +73,108 @@ struct SolvingStatistics
 class SolverInterface
 {
 public:
-   /// Load formula from a given dimacs file, return false if failed.
-   virtual bool loadFormula(const char* filename) = 0;
-
-   /// Get the number of variables of the current resolution.
-   virtual int getVariablesCount() = 0;
-
-   /// Get a variable suitable for search splitting.
-   virtual int getDivisionVariable() = 0;
-
-   /// Set initial phase for a given variable.
-   virtual void setPhase(const int var, const bool phase) = 0;
-
-   /// Bump activity of a given variable.
-   virtual void bumpVariableActivity(const int var, const int times) = 0;
-
-   /// Interrupt resolution, solving cannot continue until interrupt is unset.
-   virtual void setSolverInterrupt() = 0;
-
-   /// Remove the SAT solving interrupt request.
-   virtual void unsetSolverInterrupt() = 0;
-
-   /// Solve the formula with a given cube.
-   virtual SatResult solve(const vector<int> & cube) = 0;
-
-   /// Add a permanent clause to the formula.
-   virtual void addClause(ClauseExchange * clause) = 0;
-
-   /// Add a list of permanent clauses to the formula.
-   virtual void addClauses(const vector<ClauseExchange *> & clauses) = 0;
-
-   /// Add a list of initial clauses to the formula.
-   virtual void addInitialClauses(const vector<ClauseExchange *> & clauses) = 0;
-
-   /// Add a learned clause to the formula.
-   virtual void addLearnedClause(ClauseExchange * clauses) = 0;
-   
-   /// Add a list of learned clauses to the formula.
-   virtual void addLearnedClauses(const vector<ClauseExchange *> & clauses) = 0;
-
-   /// Get a list of learned clauses.
-   virtual void getLearnedClauses(vector<ClauseExchange *> & clauses) = 0;
-
-   /// Request the solver to produce more clauses.
-   virtual void increaseClauseProduction() = 0;
-   
-   /// Request the solver to produce less clauses.
-   virtual void decreaseClauseProduction() = 0;
-
-   /// Get solver statistics.
-   virtual SolvingStatistics getStatistics() = 0;
-
-   /// Return the model in case of SAT result.
-   virtual vector<int> getModel() = 0;
-
-   /// Native diversification.
-   virtual void diversify(int id) = 0;
-
-   virtual void getHeuristicData(vector<int> ** flipActivity,vector<int> ** nbPropagations,vector<int> ** nbDecisionVar){}
-
-   virtual void setHeuristicData(vector<int> * flipActivity,vector<int> * nbPropagations,vector<int> * nbDecisionVar){}
-
-
-
-   /// Constructor.
-   SolverInterface(int solverId, SolverType solverType)
-   {
-      id    = solverId;
-      type  = solverType;
-      nRefs = 1;
-   }
-
-   /// Destructor.
-   virtual ~SolverInterface()
-   {
-   }
-
-   /// Increase the counter of references of this solver.
-   void increase()
-   {
-      nRefs++;
-   }
-
-   /// Decrease the counter of references of this solver, delete it if needed.
-   void release()
-   {
-      int oldValue = nRefs.fetch_sub(1);
-
-      if (oldValue - 1 == 0) {
-	double time=getAbsoluteTime();
-	int id_log=id;
-         delete this;
-	 log(1,"Solver %d (%p) deleted because no longer referenced time=%f\n",id_log,this,getAbsoluteTime()-time);
-
-      }
-   }
-
-   /// Id of this solver.
-   int id;
-
-   /// Type of this solver.
-   SolverType type;
-
-   /// Number of references pointing on this solver.
-   atomic<int> nRefs;
+	/// Load formula from a given dimacs file, return false if failed.
+	virtual bool loadFormula(const char* filename) = 0;
+	
+	/// Get the number of variables of the current resolution.
+	virtual int getVariablesCount() = 0;
+	
+	/// Get a variable suitable for search splitting.
+	virtual int getDivisionVariable() = 0;
+	
+	/// Set initial phase for a given variable.
+	virtual void setPhase(const int var, const bool phase) = 0;
+	
+	/// Bump activity of a given variable.
+	virtual void bumpVariableActivity(const int var, const int times) = 0;
+	
+	/// Interrupt resolution, solving cannot continue until interrupt is unset.
+	virtual void setSolverInterrupt() = 0;
+	
+	/// Remove the SAT solving interrupt request.
+	virtual void unsetSolverInterrupt() = 0;
+	
+	/// Solve the formula with a given cube.
+	virtual SatResult solve(const vector<int> & cube) = 0;
+	
+	/// Add a permanent clause to the formula.
+	virtual void addClause(ClauseExchange * clause) = 0;
+	
+	/// Add a list of permanent clauses to the formula.
+	virtual void addClauses(const vector<ClauseExchange *> & clauses) = 0;
+	
+	/// Add a list of initial clauses to the formula.
+	virtual void addInitialClauses(const vector<ClauseExchange *> & clauses) = 0;
+	
+	/// Add a learned clause to the formula.
+	virtual void addLearnedClause(ClauseExchange * clauses) = 0;
+	
+	/// Add a list of learned clauses to the formula.
+	virtual void addLearnedClauses(const vector<ClauseExchange *> & clauses) = 0;
+	
+	/// Get a list of learned clauses.
+	virtual void getLearnedClauses(vector<ClauseExchange *> & clauses) = 0;
+	
+	/// Request the solver to produce more clauses.
+	virtual void increaseClauseProduction() = 0;
+	
+	/// Request the solver to produce less clauses.
+	virtual void decreaseClauseProduction() = 0;
+	
+	/// Get solver statistics.
+	virtual SolvingStatistics getStatistics() = 0;
+	
+	/// Return the model in case of SAT result.
+	virtual vector<int> getModel() = 0;
+	
+	/// Native diversification.
+	virtual void diversify(int id) = 0;
+	
+	virtual void getHeuristicData(vector<int> ** flipActivity,vector<int> ** nbPropagations,vector<int> ** nbDecisionVar){}
+	
+	virtual void setHeuristicData(vector<int> * flipActivity,vector<int> * nbPropagations,vector<int> * nbDecisionVar){}
+	
+	
+	
+	/// Constructor.
+	SolverInterface(int solverId, SolverType solverType)
+	{
+		id    = solverId;
+		type  = solverType;
+		nRefs = 1;
+	}
+	
+	/// Destructor.
+	virtual ~SolverInterface()
+	{
+	}
+	
+	/// Increase the counter of references of this solver.
+	void increase()
+	{
+		nRefs++;
+	}
+	
+	/// Decrease the counter of references of this solver, delete it if needed.
+	void release()
+	{
+		int oldValue = nRefs.fetch_sub(1);
+		
+		if (oldValue - 1 == 0) {
+			double time=getAbsoluteTime();
+			int id_log=id;
+			delete this;
+			log(1,"Solver %d (%p) deleted because no longer referenced time=%f\n",id_log,this,getAbsoluteTime()-time);
+			
+		}
+	}
+	
+	/// Id of this solver.
+	int id;
+	
+	/// Type of this solver.
+	SolverType type;
+	
+	/// Number of references pointing on this solver.
+	atomic<int> nRefs;
 };
