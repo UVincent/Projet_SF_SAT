@@ -29,16 +29,18 @@ using namespace std;
 
 Portfolio::Portfolio()
 {
-	strategyEnding = false;
+
 }
 
 Portfolio::~Portfolio()
 {
-	strategyEnding = true;
-	globalEnding = false;
-	for(size_t i = 0; i < slaves.size(); i++) {
-		delete slaves[i];
+
+	for(auto &sw : slaves){
+		delete sw;
 	}
+	// for(size_t i = 0; i < slaves.size(); i++) {
+	// 	delete slaves[i];
+	// }
 }
 
 void
@@ -46,6 +48,7 @@ Portfolio::solve(const vector<int> & cube)
 {
 	strategyEnding = false;
 
+	/* Start the solving from all SW */
 	for(auto &sw : slaves){
 		sw->solve(cube);
 	}
@@ -56,11 +59,25 @@ Portfolio::join(WorkingStrategy * strat, SatResult res,
 				const vector<int> & model)
 {
 	setInterrupt();
+	strategyEnding = true;
 
+	/* Here we are following what a SequantialWorker does in his join fucntion */
+	if(parent == NULL){
+		globalEnding = true;
+		finalResult = res;
+		if(res = SAT){
+			finalModel = model;
+		}
+		else{
+			parent->join(this, res, model);
+		}
+	}
+
+	/* Make all SequantialWorker execute join */
 	for(auto &sw : slaves){
 		sw->join(strat, res, model);
 	}
-	
+
 	// unsetInterrupt() ?
 }
 
