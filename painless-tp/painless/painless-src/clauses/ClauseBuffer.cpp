@@ -121,7 +121,7 @@ ClauseBuffer::getClause(ClauseExchange ** clause)
             tail->clause->size++;
          }
          else{
-            clause = &(next->clause);
+            *clause = next->clause;
             if(this->buffer.head.compare_exchange_strong(head, next)){
                head->clause->size++;
                break;
@@ -130,6 +130,7 @@ ClauseBuffer::getClause(ClauseExchange ** clause)
       }
    }
    free(head);
+   this->buffer.size --;
    return true;
 }
 
