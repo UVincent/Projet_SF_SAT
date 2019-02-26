@@ -87,6 +87,7 @@ int main(int argc, char ** argv)
       return 0;
    }
 
+   printf("CNF file found !\n");
    Parameters::printParams();
 
    setVerbosityLevel(Parameters::getIntParam("v", 0));
@@ -96,6 +97,7 @@ int main(int argc, char ** argv)
    srand(time(NULL));
 
    // Create solvers
+   puts("painless.cpp\t - Create solvers");
    vector<SolverInterface *> solvers;
    
    const string solverType = Parameters::getParam("solver");
@@ -115,6 +117,7 @@ int main(int argc, char ** argv)
    }
 
    // Diversifycation
+   puts("painless.cpp\t - Diversification");
    int diversification = Parameters::getIntParam("d", 0);
 
    switch (diversification) {
@@ -153,6 +156,7 @@ int main(int argc, char ** argv)
    }
 
    // Start sharing threads
+   puts("painless.cpp\t - Start sharing threads");
    switch(Parameters::getIntParam("shr-strat", 0)) {
       case 1 :
          nSharers   = 1;
@@ -166,6 +170,7 @@ int main(int argc, char ** argv)
    }
 
    // Working strategy creation
+   puts("painless.cpp\t - Working strategy creation");
    switch(wkrStrat) {
       case 2 :
          working = new Portfolio();
@@ -191,13 +196,16 @@ int main(int argc, char ** argv)
    }
 
    // Init the management of clauses
+   puts("painless.cpp\t - initClauseManager()");
    ClauseManager::initClauseManager();
 
    // Launch working
+   puts("painless.cpp\t - Launch working");
    vector<int> cube;
    working->solve(cube);
 
    // Wait until end or timeout
+   puts("painless.cpp\t - Wait until end or timeout");
    int timeout   = Parameters::getIntParam("t", -1);
    int maxMemory = Parameters::getIntParam("max-memory", -1) * 1024 * 1024;
 
@@ -215,6 +223,7 @@ int main(int argc, char ** argv)
    }
 
    // Delete sharers
+   puts("painless.cpp\t - Delete sharers");
    for (int i=0; i < nSharers; i++) {
       delete sharers[i];
    }

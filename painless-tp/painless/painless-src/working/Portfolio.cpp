@@ -24,84 +24,94 @@
 
 using namespace std;
 
-/* Le but du Portfolio est de lancer plusieurs SequentialWorkers en parallèle pour une formule donnée */
+/* Le but du Portfolio est de lancer plusieurs SequentialWorkers en parallèle
+ pour une formule donnée */
 
 Portfolio::Portfolio()
 {
-   strategyEnding = false;
+	strategyEnding = false;
 }
 
 Portfolio::~Portfolio()
 {
-   strategyEnding = true;
-   globalEnding = false;
+	strategyEnding = true;
+	globalEnding = false;
+	for(size_t i = 0; i < slaves.size(); i++) {
+		delete slaves[i];
+	}
 }
 
 void
 Portfolio::solve(const vector<int> & cube)
 {
-   for(auto &sw : slaves){
-        sw->solve(cube);
-   }
+	strategyEnding = false;
+
+	for(auto &sw : slaves){
+		sw->solve(cube);
+	}
 }
 
 void
 Portfolio::join(WorkingStrategy * strat, SatResult res,
-                const vector<int> & model)
+				const vector<int> & model)
 {
-   for(auto &sw : slaves){
-        sw->join(strat, res, model);
-   }
+	setInterrupt();
 
+	for(auto &sw : slaves){
+		sw->join(strat, res, model);
+	}
+	
+	// unsetInterrupt() ?
 }
 
 void
 Portfolio::setInterrupt()
 {
-   for(auto &sw : slaves){
-        sw->setInterrupt();
-   }
+	for(auto &sw : slaves){
+		sw->setInterrupt();
+	}
 }
 
 void
 Portfolio::unsetInterrupt()
 {
-   for(auto &sw : slaves){
-        sw->unsetInterrupt();
-   }
+	for(auto &sw : slaves){
+		sw->unsetInterrupt();
+	}
 }
 
 
 void
 Portfolio::waitInterrupt()
 {
-   for(auto &sw : slaves){
-        sw->waitInterrupt();
-   }
+	for(auto &sw : slaves){
+		sw->waitInterrupt();
+	}
 }
 
 int
 Portfolio::getDivisionVariable()
 {
-   for(auto &sw : slaves){
-        sw->getDivisionVariable();
-   }
-
-   return 0;
+	for(auto &sw : slaves){
+		if(sw->getDivisionVariable() <= 0)
+			return -1;
+	}
+	
+	return 0;
 }
 
 void
 Portfolio::setPhase(int var, bool value)
 {
-   for(auto &sw : slaves){
-        sw->setPhase(var, value);
-   }
+	for(auto &sw : slaves){
+		sw->setPhase(var, value);
+	}
 }
 
 void
 Portfolio::bumpVariableActivity(int var, int times)
 {
-   for(auto &sw : slaves){
-        sw->bumpVariableActivity(var, times);
-   }
+	for(auto &sw : slaves){
+		sw->bumpVariableActivity(var, times);
+	}
 }
