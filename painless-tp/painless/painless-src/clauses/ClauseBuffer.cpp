@@ -109,7 +109,7 @@ ClauseBuffer::getClause(ClauseExchange ** clause)
          }
       }
    }
-   free(*clause);
+   free(head);
    return true;
 }
 
