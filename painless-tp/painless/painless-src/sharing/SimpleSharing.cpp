@@ -37,16 +37,17 @@ SimpleSharing::doSharing(int idSharer, const vector<SolverInterface *> & from,
 		from[i]->getLearnedClauses(tmp);
 		stats.sharedClauses += tmp.size();
 		stats.receivedClauses += tmp.size();
-		/* Update all shared clauses refs to the total number of consumers */
+		/* Update all shared clauses refs */
 		for(j=0; j<to.size(); j++){
-			if(j != i){
+			if(j != i){ /* Take care to not increase ref when the current one is running */
 				for(k=0; k<tmp.size(); k++){
 					ClauseManager::increaseClause(tmp[k], 1);
 				}
+				/* Sharing clauses with the consumers */
 				to[j]->addLearnedClauses(tmp);
 			} 
 		}
-		/* Put them to all consumers */
+		/* Delete shared clauses from tmp, the sharing has been done */
 		for(auto &shared_clause : tmp){
 			ClauseManager::releaseClause(shared_clause);
 		}
