@@ -34,7 +34,6 @@ Portfolio::Portfolio()
 
 Portfolio::~Portfolio()
 {
-
 	for(auto &sw : slaves){
 		delete sw;
 	}
