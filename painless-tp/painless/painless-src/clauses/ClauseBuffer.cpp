@@ -48,7 +48,6 @@ ClauseBuffer::~ClauseBuffer()
 void
 ClauseBuffer::addClause(ClauseExchange * clause)
 {
-   //puts("ClauseBuffer.cpp\t - addClause(...)");
    ListElement *node = new ListElement(clause);
    ListElement *next = new ListElement(NULL);
    ListElement *tail = new ListElement(NULL);
@@ -56,36 +55,22 @@ ClauseBuffer::addClause(ClauseExchange * clause)
    while(1){
       tail = this->buffer.tail;
       next = tail->next;
-      //puts("ClauseBuffer.cpp\t - while(1)");
-      //printf("ClauseBuffer.cpp\t - tailClauseSize : %d, tail->next : %s, nextClauseSize : %d.\n",
-      //    tail->clause->size, tail->next, next->clause->size);
       if(tail == this->buffer.tail){
-         //puts("*");
          if(next == NULL){
-            //puts("**");
             if((tail->next.compare_exchange_strong(next, node))){
-               //puts("if");
                int tmpb = buffer.size++;
                printf("buffSize : %d.\n", tmpb);
                break;
             }
          }
          else{
-            //puts("else");
             this->buffer.tail.compare_exchange_weak(tail, next);
             printf("tailClauseSize : %d.\n", tail->clause->size);
             tail->clause->size++;
-            //puts("else END");
          }
       }
    }
-   //puts("END while");
    this->buffer.tail.compare_exchange_strong(tail, node);
-   //int tmpB = this->buffer.size++;
-   //int tmpT = tail->clause->size++;
-   //printf("BufferSize : %d,\t", tmpB);
-   //printf("tailClauseSize : %d.\n", tmpT);
-   //puts("ClauseBuffer.cpp\t - addClause(...) : END");
 }
 
 void

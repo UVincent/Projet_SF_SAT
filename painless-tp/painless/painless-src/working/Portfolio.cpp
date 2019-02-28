@@ -38,9 +38,6 @@ Portfolio::~Portfolio()
 	for(auto &sw : slaves){
 		delete sw;
 	}
-	// for(size_t i = 0; i < slaves.size(); i++) {
-	// 	delete slaves[i];
-	// }
 }
 
 void
@@ -54,6 +51,17 @@ Portfolio::solve(const vector<int> & cube)
 	}
 }
 
+/* Following the given paper: 
+– void join(SatResult res, int[*] model): used to notify the parent strat-
+egy of the solving end. If the result is sat, model will contain an assignment
+that satisfies the sub-formula treated by this node.
+It is worth noting that the workflow must start by a call to the root’s solve
+method and eventually ends by a call to the root’s join method. The propagation
+of solving orders from a parent to one of its child nodes, is done by a call to the
+solve method of this last. The results are propagated back from a child to its
+parent by a call to the join method of this last. The solving can not be effective
+without a call to the leaves’ solve methods.
+*/
 void
 Portfolio::join(WorkingStrategy * strat, SatResult res,
 				const vector<int> & model)
@@ -61,14 +69,13 @@ Portfolio::join(WorkingStrategy * strat, SatResult res,
 	setInterrupt();
 	strategyEnding = true;
 
-	/* Here we are following what a SequantialWorker does in his join fucntion */
 	if(parent == NULL){
 		globalEnding = true;
 		finalResult = res;
 		if(res = SAT){
 			finalModel = model;
 		}
-		else{
+		else{ 
 			parent->join(this, res, model);
 		}
 	}
@@ -77,8 +84,6 @@ Portfolio::join(WorkingStrategy * strat, SatResult res,
 	for(auto &sw : slaves){
 		sw->join(strat, res, model);
 	}
-
-	// unsetInterrupt() ?
 }
 
 void
