@@ -87,7 +87,7 @@ int main(int argc, char ** argv)
       return 0;
    }
 
-   printf("CNF file found !\n");
+   log(2, "CNF file found !\n");
    Parameters::printParams();
 
    setVerbosityLevel(Parameters::getIntParam("v", 0));
@@ -97,7 +97,7 @@ int main(int argc, char ** argv)
    srand(time(NULL));
 
    // Create solvers
-   puts("painless.cpp\t - Create solvers");
+   log(1, "painless.cpp\t - Create solvers\n");
    vector<SolverInterface *> solvers;
    
    const string solverType = Parameters::getParam("solver");
@@ -117,7 +117,7 @@ int main(int argc, char ** argv)
    }
 
    // Diversifycation
-   puts("painless.cpp\t - Diversification");
+   log(1, "painless.cpp\t - Diversification\n");
    int diversification = Parameters::getIntParam("d", 0);
 
    switch (diversification) {
@@ -156,7 +156,7 @@ int main(int argc, char ** argv)
    }
 
    // Start sharing threads
-   puts("painless.cpp\t - Start sharing threads");
+   log(1, "painless.cpp\t - Start sharing threads\n");
    switch(Parameters::getIntParam("shr-strat", 0)) {
       case 1 :
          nSharers   = 1;
@@ -170,7 +170,7 @@ int main(int argc, char ** argv)
    }
 
    // Working strategy creation
-   puts("painless.cpp\t - Working strategy creation");
+   log(1, "painless.cpp\t - Working strategy creation\n");
    switch(wkrStrat) {
       case 2 :
          working = new Portfolio();
@@ -196,16 +196,16 @@ int main(int argc, char ** argv)
    }
 
    // Init the management of clauses
-   puts("painless.cpp\t - initClauseManager()");
+   log(1, "painless.cpp\t - initClauseManager()\n");
    ClauseManager::initClauseManager();
 
    // Launch working
-   puts("painless.cpp\t - Launch working");
+   log(1, "painless.cpp\t - Launch working\n");
    vector<int> cube;
    working->solve(cube);
 
    // Wait until end or timeout
-   puts("painless.cpp\t - Wait until end or timeout");
+   log(1, "painless.cpp\t - Wait until end or timeout\n");
    int timeout   = Parameters::getIntParam("t", -1);
    int maxMemory = Parameters::getIntParam("max-memory", -1) * 1024 * 1024;
 
@@ -223,7 +223,7 @@ int main(int argc, char ** argv)
    }
 
    // Delete sharers
-   puts("painless.cpp\t - Delete sharers");
+   log(1, "painless.cpp\t - Delete sharers\n");
    for (int i=0; i < nSharers; i++) {
       delete sharers[i];
    }

@@ -18,6 +18,7 @@
 // -----------------------------------------------------------------------------
 
 #include "ClauseBuffer.h"
+#include "../utils/Logger.h"
 
 using namespace std;
 
@@ -26,20 +27,20 @@ using namespace std;
 //-------------------------------------------------
 ClauseBuffer::ClauseBuffer()
 {
-   puts("ClauseBuffer.cpp\t - new ClauseBuffer()");
-   ListElement *node = new ListElement(NULL);
-
-   /* Initialisation variables */
-   this->buffer.head = node;
-   this->buffer.tail = node;
-   buffer.size = 0;
+	log(2, "ClauseBuffer.cpp\t - new ClauseBuffer()\n");
+	ListElement *node = new ListElement(NULL);
+	
+	/* Initialisation variables */
+	this->buffer.head = node;
+	this->buffer.tail = node;
+	buffer.size = 0;
 }
 
 ClauseBuffer::~ClauseBuffer()
 {
-  puts("ClauseBuffer.cpp\t - delete ClauseBuffer()");
-  delete this->buffer.head;
-  delete this->buffer.tail;
+	log(2, "ClauseBuffer.cpp\t - delete ClauseBuffer()\n");
+	delete this->buffer.head;
+	delete this->buffer.tail;
 }
 
 //-------------------------------------------------
@@ -48,38 +49,39 @@ ClauseBuffer::~ClauseBuffer()
 void
 ClauseBuffer::addClause(ClauseExchange * clause)
 {
-   ListElement *node = new ListElement(clause);
-   ListElement *next = new ListElement(NULL);
-   ListElement *tail = new ListElement(NULL);
-
-   while(1){
-      tail = this->buffer.tail;
-      next = tail->next;
-      if(tail == this->buffer.tail){
-         if(next == NULL){
-            if((tail->next.compare_exchange_strong(next, node))){
-               int tmpb = buffer.size++;
-               printf("buffSize : %d.\n", tmpb);
-               break;
-            }
-         }
-         else{
-            this->buffer.tail.compare_exchange_weak(tail, next);
-            printf("tailClauseSize : %d.\n", tail->clause->size);
-            tail->clause->size++;
-         }
-      }
-   }
-   this->buffer.tail.compare_exchange_strong(tail, node);
+	log(1, "ClauseBuffer.cpp\t - addClause(...)\n");
+	ListElement *node = new ListElement(clause);
+	ListElement *next = new ListElement(NULL);
+	ListElement *tail = new ListElement(NULL);
+	
+	while(1){
+		tail = this->buffer.tail;
+		next = tail->next;
+		if(tail == this->buffer.tail){
+			if(next == NULL){
+				if((tail->next.compare_exchange_strong(next, node))){
+					int tmpb = buffer.size++;
+					log(3, "buffSize : %d.\n", tmpb);
+					break;
+				}
+			}
+			else{
+				this->buffer.tail.compare_exchange_weak(tail, next);
+				log(3, "tailClauseSize : %d.\n", tail->clause->size);
+				tail->clause->size++;
+			}
+		}
+	}
+	this->buffer.tail.compare_exchange_strong(tail, node);
 }
 
 void
 ClauseBuffer::addClauses(const vector<ClauseExchange *> & clauses)
 {
-   puts("ClauseBuffer.cpp\t - addClauses(...)");
-   for(auto &clause : clauses){
-      addClause(clause);
-   }
+	log(2, "ClauseBuffer.cpp\t - addClauses(...)\n");
+	for(auto &clause : clauses){
+		addClause(clause);
+	}
 }
 
 
@@ -89,43 +91,43 @@ ClauseBuffer::addClauses(const vector<ClauseExchange *> & clauses)
 bool
 ClauseBuffer::getClause(ClauseExchange ** clause)
 {
-   //puts("ClauseBuffer.cpp\t - getClause(...)");
-   ListElement *head = new ListElement(NULL);
-   ListElement *tail = new ListElement(NULL);
-   ListElement *next = new ListElement(NULL);
-   while(1){
-      head = this->buffer.head;
-      tail = this->buffer.tail;
-      next = head->next;
-      if(head == this->buffer.head){
-         if(head == tail){
-            if(next == NULL){
-               return false;
-            }
-            this->buffer.tail.compare_exchange_strong(tail, next);
-            tail->clause->size++;
-         }
-         else{
-            *clause = next->clause;
-            if(this->buffer.head.compare_exchange_strong(head, next)){
-               head->clause->size++;
-               break;
-            }
-         }
-      }
-   }
-   free(head);
-   this->buffer.size --;
-   return true;
+	log(3, "ClauseBuffer.cpp\t - getClause(...)\n");
+	ListElement *head = new ListElement(NULL);
+	ListElement *tail = new ListElement(NULL);
+	ListElement *next = new ListElement(NULL);
+	while(1){
+		head = this->buffer.head;
+		tail = this->buffer.tail;
+		next = head->next;
+		if(head == this->buffer.head){
+			if(head == tail){
+				if(next == NULL){
+					return false;
+				}
+				this->buffer.tail.compare_exchange_strong(tail, next);
+				tail->clause->size++;
+			}
+			else{
+				*clause = next->clause;
+				if(this->buffer.head.compare_exchange_strong(head, next)){
+					head->clause->size++;
+					break;
+				}
+			}
+		}
+	}
+	free(head);
+	this->buffer.size --;
+	return true;
 }
 
 void
 ClauseBuffer::getClauses(vector<ClauseExchange *> & clauses)
 {
-   puts("ClauseBuffer.cpp\t - getClauses(...)");
-   for(auto &clause : clauses){
-      getClause(&clause);
-   }
+	log(2, "ClauseBuffer.cpp\t - getClauses(...)\n");
+	for(auto &clause : clauses){
+		getClause(&clause);
+	}
 }
 
 //-------------------------------------------------
@@ -134,6 +136,6 @@ ClauseBuffer::getClauses(vector<ClauseExchange *> & clauses)
 int
 ClauseBuffer::size()
 {
-   return this->buffer.size;
+	return this->buffer.size;
 }
 
