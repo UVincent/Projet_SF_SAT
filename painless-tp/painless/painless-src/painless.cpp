@@ -70,7 +70,7 @@ int main(int argc, char ** argv)
 			   " 3=random, 4=native, 5=1&4, 6=sparse-random, 7=6&4," \
 			   " default is 0.\n");
 		printf("\t-c=<INT>\t\t number of cpus, default is 4.\n");
-		printf("\t-wkr-strat=1...2\t 1=divide and conquer (DC), 2=portfolio" \
+		printf("\t-wkr-strat=1...3\t 1=divide and conquer (DC), 2=portfolio" \
 			   " (PF), 3=PF of DC, default is DC");
 		printf("\t-shr-strat=0...1\t 0=no sharing, 1=simple sharing, default is" \
 			   " 0\n");
@@ -174,10 +174,12 @@ int main(int argc, char ** argv)
 	switch(wkrStrat) {
 		// Question 4 :
 		case 3 :
+			log(1, "painless.cpp\t - DivideAndConquer strategy creation\n");
+			
 			working = new Portfolio();
 			
 			for (size_t i = 0; i < cpus; i++) {
-				working->addSlave(new SequentialWorker(solvers[i]));
+				working->addSlave(new DivideAndConquer(solvers[i]));
 			}
 			break;
 		// END question 4.
