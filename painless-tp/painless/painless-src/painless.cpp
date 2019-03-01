@@ -177,11 +177,12 @@ int main(int argc, char ** argv)
 		case 3 :
 			log(1, "painless.cpp\t - DivideAndConquer strategy creation\n");
 			
-			int middle = 1;
+			int middle;
+                        middle = 1;
 			if (cpus > 2) {
 				middle = (int)(cpus / 2);
 			}
-			WorkingStrategy * ws1, * ws 2;
+			WorkingStrategy * ws1, * ws2;
 			
 			working = new Portfolio();
 			ws1 = new DivideAndConquer();
@@ -192,8 +193,8 @@ int main(int argc, char ** argv)
 			for (size_t i = middle; i < cpus; i++) {
 				ws2->addSlave(new SequentialWorker(solvers[i]));
 			}
-			working.addSlave(ws1);
-			Working.addSlave(ws2);
+			working->addSlave(ws1);
+			working->addSlave(ws2);
 			break;
 		// END question 4.
 		case 2 :

@@ -49,7 +49,7 @@ ClauseBuffer::~ClauseBuffer()
 void
 ClauseBuffer::addClause(ClauseExchange * clause)
 {
-	log(2, "ClauseBuffer.cpp\t - addClause(...)\n");
+	log(3, "ClauseBuffer.cpp\t - addClause(...)\n");
 	ListElement *node = new ListElement(clause);
 	ListElement *next = new ListElement(NULL);
 	ListElement *tail = new ListElement(NULL);
@@ -61,7 +61,7 @@ ClauseBuffer::addClause(ClauseExchange * clause)
 			if(next == NULL){
 				if((tail->next.compare_exchange_strong(next, node))){
 					int tmpb = buffer.size++;
-					log(3, "buffSize : %d.\n", tmpb);
+					log(2, "buffSize : %d.\n", tmpb);
 					break;
 				}
 			}

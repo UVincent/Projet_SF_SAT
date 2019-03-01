@@ -34,6 +34,8 @@ class DivideAndConquer : public WorkingStrategy
 public:
    DivideAndConquer();
 
+   DivideAndConquer(SolverInterface * solver_);
+
    ~DivideAndConquer();
 
    void solve(const vector<int> & cube);
@@ -52,6 +54,8 @@ public:
    void setPhase(int var, bool value);
 
    void bumpVariableActivity(int var, int times);
+
+   SolverInterface * solver;
 
 protected:
    int cloneStrategy;
