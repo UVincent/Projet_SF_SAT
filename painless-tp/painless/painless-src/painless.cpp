@@ -173,12 +173,27 @@ int main(int argc, char ** argv)
 	log(1, "painless.cpp\t - Working strategy creation\n");
 	switch(wkrStrat) {
 		// Question 4 :
+		// We can use it withe "combo" solver option
 		case 3 :
 			log(1, "painless.cpp\t - DivideAndConquer strategy creation\n");
 			
-			working = new Portfolio();
+			int middle = 1;
+			if (cpus > 2) {
+				middle = (int)(cpus / 2);
+			}
+			WorkingStrategy * ws1, * ws 2;
 			
-			working->addSlave(new DivideAndConquer());
+			working = new Portfolio();
+			ws1 = new DivideAndConquer();
+			ws2 = new DivideAndConquer();
+			for (size_t i = 0; i < middle; i++) {
+				ws1->addSlave(new SequentialWorker(solvers[i]));
+			}
+			for (size_t i = middle; i < cpus; i++) {
+				ws2->addSlave(new SequentialWorker(solvers[i]));
+			}
+			working.addSlave(ws1);
+			Working.addSlave(ws2);
 			break;
 		// END question 4.
 		case 2 :

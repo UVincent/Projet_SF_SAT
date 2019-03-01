@@ -209,6 +209,34 @@ DivideAndConquer::DivideAndConquer()
    master = new Thread(mainMasterDivideAndConquer, this);
 }
 
+// Question 4 :
+DivideAndConquer::DivideAndConquer(SolverInterface * solver_)
+{
+	log(1, "DivideAndConquer.cpp\t- new DivideAndConquer()\n");
+	cloneStrategy    = Parameters::getIntParam("copy-mode", 1);
+	divisionStrategy = Parameters::getIntParam("split-heur", 1);
+	
+	solver    = solver_;
+	
+	pthread_mutex_init(&mutexStart, NULL);
+	pthread_mutex_init(&mutexListsWorkers,NULL);
+	pthread_mutex_init(&mutexFirstSolution,NULL);
+	
+	pthread_cond_init(&mutexCondStart, NULL);
+	pthread_cond_init(&mutexCondLists, NULL);
+	
+	strategyEnding = false;
+	
+	nWorkers            = 0;
+	nDivisions          = 0;
+	nCancelledDivisions = 0;
+	
+	waitJob = true;
+	
+	master = new Thread(mainMasterDivideAndConquer, this);
+}
+// END question 4.
+
 DivideAndConquer::~DivideAndConquer()
 {
    master->join();
