@@ -178,9 +178,7 @@ int main(int argc, char ** argv)
 			
 			working = new Portfolio();
 			
-			for (size_t i = 0; i < cpus; i++) {
-				working->addSlave(new DivideAndConquer(solvers[i]));
-			}
+			working->addSlave(new DivideAndConquer());
 			break;
 		// END question 4.
 		case 2 :

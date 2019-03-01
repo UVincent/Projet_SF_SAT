@@ -28,7 +28,6 @@ using namespace std;
 ClauseBuffer::ClauseBuffer()
 {
 	log(2, "ClauseBuffer.cpp\t - new ClauseBuffer()\n");
-   printf("ClauseBuffer.cpp\t - new ClauseBuffer()\n");
 	ListElement *node = new ListElement(NULL);
 	
 	/* Initialisation variables */
@@ -40,7 +39,6 @@ ClauseBuffer::ClauseBuffer()
 ClauseBuffer::~ClauseBuffer()
 {
 	log(2, "ClauseBuffer.cpp\t - delete ClauseBuffer()\n");
-   printf("ClauseBuffer.cpp\t - delete ClauseBuffer()\n");
 	delete this->buffer.head;
 	delete this->buffer.tail;
 }
@@ -51,7 +49,7 @@ ClauseBuffer::~ClauseBuffer()
 void
 ClauseBuffer::addClause(ClauseExchange * clause)
 {
-	log(1, "ClauseBuffer.cpp\t - addClause(...)\n");
+	log(2, "ClauseBuffer.cpp\t - addClause(...)\n");
 	ListElement *node = new ListElement(clause);
 	ListElement *next = new ListElement(NULL);
 	ListElement *tail = new ListElement(NULL);
@@ -64,7 +62,6 @@ ClauseBuffer::addClause(ClauseExchange * clause)
 				if((tail->next.compare_exchange_strong(next, node))){
 					int tmpb = buffer.size++;
 					log(3, "buffSize : %d.\n", tmpb);
-               printf("buffSize : %d.\n", tmpb);
 					break;
 				}
 			}

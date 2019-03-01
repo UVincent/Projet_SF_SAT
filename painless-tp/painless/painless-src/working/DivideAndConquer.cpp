@@ -101,6 +101,7 @@ static inline void mergeVector(vector<T>& source, vector<T> & target)
 
 void * mainMasterDivideAndConquer(void * arg)
 {
+   log(1, "DivideAndConquer.cpp\t- main master thread start.\n");
    DivideAndConquer * dc = (DivideAndConquer *)arg;
 
    pthread_mutex_lock(&dc->mutexStart); //Wait for the beginning.
@@ -186,6 +187,7 @@ void * mainMasterDivideAndConquer(void * arg)
 
 DivideAndConquer::DivideAndConquer()
 {
+   log(1, "DivideAndConquer.cpp\t- new DivideAndConquer()\n");
    cloneStrategy    = Parameters::getIntParam("copy-mode", 1);
    divisionStrategy = Parameters::getIntParam("split-heur", 1);
 

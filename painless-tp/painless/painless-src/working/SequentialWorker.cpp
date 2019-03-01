@@ -27,6 +27,7 @@ using namespace std;
 // Main executed by worker threads
 void * mainWorker(void *arg)
 {
+   log(1, "SequentialWorker.cpp\t- main worker start thread\n");
    SequentialWorker * sq = (SequentialWorker *)arg;
 
    SatResult res = UNKNOWN;
@@ -68,6 +69,7 @@ void * mainWorker(void *arg)
 // Constructor
 SequentialWorker::SequentialWorker(SolverInterface * solver_)
 {
+   log(1, "SequentialWorker.cpp\t- new SequentialWorker(SolverInterface)\n");
    solver    = solver_;
    interrupt = true;
 
