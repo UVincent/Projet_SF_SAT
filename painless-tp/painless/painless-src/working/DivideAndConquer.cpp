@@ -106,6 +106,7 @@ void * mainMasterDivideAndConquer(void * arg)
 
    pthread_mutex_lock(&dc->mutexStart); //Wait for the beginning.
 
+   printf("dc->waitJob : %d\n", dc->waitJob.load());
    if(dc->waitJob == true) {
       log(0, "Thread Master is waiting for beginning.\n");
       pthread_cond_wait(&dc->mutexCondStart, &dc->mutexStart);
@@ -128,6 +129,8 @@ void * mainMasterDivideAndConquer(void * arg)
 
    dc->nWorkers++;
    dc->times[actualWorker] = getAbsoluteTime();
+   printf("actualWorker : %s\n", actualWorker);
+   //printf("actualWorker->solve : %s\n", actualWorker->solve);
    actualWorker->solve(dc->cubes[actualWorker]); //We launch one SW
 
    log(0, "Master has started first worker and is now waiting and managing" \
